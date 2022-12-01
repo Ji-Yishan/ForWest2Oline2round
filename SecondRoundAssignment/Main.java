@@ -14,6 +14,7 @@ public class Main {
         shop.customerList();
         while(shop.getBusiness()) {
             shop.custermer();
+            shop.getTrade();
             shop.trade();
             shop.inBusiness();
         }
@@ -167,6 +168,9 @@ class MyAnimalShop extends Customer implements AnimalShop {
     protected double remaining = 100;
     double benefit;
     boolean business = true;
+    int selling = 0;
+    int buying = 0;
+    int isTrade=0;
     Cats cat = new Cats();
     Dogs dog = new Dogs();
     Snake snake = new Snake();
@@ -177,81 +181,88 @@ class MyAnimalShop extends Customer implements AnimalShop {
         animals.add(dog.toString());
         animals.add(snake.toString());
     }
+    public void getTrade(){
+        selling=0;
+        buying=0;
+    }
     @Override
     public void trade()  {// list of animals
-        Scanner buy = new Scanner(System.in);
-        System.out.println("购买还是售卖动物");
-        String decide = buy.nextLine();
-        if ("售卖".equals(decide)) {
-            int selling = 0;
-            while (selling == 0) {
-                System.out.println("输入售卖动物名称（英文单数）");
-                String buyA = buy.nextLine() + "/";
-                buyA = buyA.toLowerCase();
-                System.out.println("动物年龄");
-                String buyAge = buy.nextLine() + "/";
-                System.out.println("动物性别（male/female）");
-                String buySex = buy.nextLine() + "/";
-                System.out.println("请问您想卖多少钱");
-                String buyPrice = buy.nextLine();
-                String buyToString = buyA + buyAge + buySex + " " + buyPrice;
-                animals.add(buyToString);
-                remaining = remaining - Double.parseDouble(buyPrice);
-                if(remaining<0){
-                    throw new AnimalNotFountException();
-                }
-                System.out.println("是否继续售卖");
-                String isSelling = buy.nextLine();
-                if ("否".equals(isSelling)) {
-                    selling = 1;
+        while(isTrade==0){
+            Scanner buy = new Scanner(System.in);
+            System.out.println("购买还是售卖动物");
+            String decide = buy.nextLine();
+            if ("售卖".equals(decide)) {
+                while (selling == 0) {
+                    System.out.println("输入售卖动物名称（英文单数）");
+                    String buyA = buy.nextLine() + "/";
+                    buyA = buyA.toLowerCase();
+                    System.out.println("动物年龄");
+                    String buyAge = buy.nextLine() + "/";
+                    System.out.println("动物性别（male/female）");
+                    String buySex = buy.nextLine() + "/";
+                    System.out.println("请问您想卖多少钱");
+                    String buyPrice = buy.nextLine();
+                    String buyToString = buyA + buyAge + buySex + " " + buyPrice;
+                    animals.add(buyToString);
+                    remaining = remaining - Double.parseDouble(buyPrice);
+                    if(remaining<0){
+                        throw new AnimalNotFountException();
+                    }
+                    System.out.println("是否继续售卖");
+                    String isSelling = buy.nextLine();
+                    if ("否".equals(isSelling)) {
+                        selling = 1;
+                    }
                 }
             }
-        }
-        if ("购买".equals(decide)) {
-            int buying = 0;
-            System.out.println(animals);
-            while (buying == 0) {
-                System.out.println("请输入购买动物名称（英文小写单数）+/+动物年龄/+动物性别/+(一个空格)动物价钱");
-                String toBuy = buy.nextLine();
-                if(animals==null){
-                    throw new InsufficientBalanceException();
-                }
-                int si = animals.size() - 1;
-                int c=0;
-                if(si==0){
-                    animals=null;
-                }
-                for (int i = 0; i < si; i++) {
-                    if (toBuy.equals(animals.get(i))) {
-                        int b = 0;
-                        c=1;
-                        int length = animals.get(i).length()-1;
-                        for (int a = 0; a < length; a++) {
-                            if (animals.get(i).charAt(a) == ' ') {
-                                b = a;
+            if ("购买".equals(decide)) {
+                System.out.println(animals);
+                while (buying == 0) {
+                    System.out.println("请输入购买动物名称（英文小写单数）+/+动物年龄/+动物性别/+(一个空格)动物价钱");
+                    String toBuy = buy.nextLine();
+                    if(animals==null){
+                        throw new InsufficientBalanceException();
+                    }
+                    int si = animals.size() - 1;
+                    int c=0;
+                    if(si==0){
+                        animals=null;
+                    }
+                    for (int i = 0; i < si; i++) {
+                        if (toBuy.equals(animals.get(i))||(toBuy).equals(" "+animals.get(i))) {
+                            int b = 0;
+                            c=1;
+                            int length = animals.get(i).length()-1;
+                            for (int a = 0; a < length; a++) {
+                                if (animals.get(i).charAt(a) == ' ') {
+                                    b = a;
+                                }
                             }
-                        }
-                        String price = animals.get(i).substring(b);
-                        remaining = remaining + Double.parseDouble(price);
+                            String price = animals.get(i).substring(b);
+                            remaining = remaining + Double.parseDouble(price);
                             animals.remove(i);
+                        }
                     }
                     if(c==0){
                         System.out.println("请按照格式输入/店内没有您想要的动物");
                     }
-                }
-                System.out.println("是否继续购买");
-                String isBuying = buy.nextLine();
-                if (isBuying.equals("否")) {
-                    buying = 1;
-                }
-                else{
-                    System.out.println(animals);
+                    System.out.println("是否继续购买");
+                    String isBuying = buy.nextLine();
+                    if (isBuying.equals("否")) {
+                        buying = 1;
+                    }
+                    else{
+                        System.out.println(animals);
+                    }
                 }
             }
+            System.out.println("目前店内动物");
+            System.out.println(animals);
+            System.out.println("店内余额为：" + remaining);
+            if(selling==1&&buying==1){
+                isTrade=1;
+            }
         }
-        System.out.println("目前店内动物");
-        System.out.println(animals);
-        System.out.println("店内余额为：" + remaining);
     }
 
     @Override

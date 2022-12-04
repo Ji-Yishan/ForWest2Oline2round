@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * @author Yishan.Ji
  */
-public class Main {
+public class task1 {
     public static void main(String[] args) {
         System.out.println("欢迎来到宠物店");
         MyAnimalShop shop=new MyAnimalShop();
@@ -27,17 +27,17 @@ abstract class Animal{
     protected int age;
     protected String sex;
     protected double price;
-    public String getAge(int age){
+    protected String getAge(int age){
         return  String.valueOf(age);
     }
-    public String getAnimalName(){
+    protected String getAnimalName(){
         return animalName;
     }
 
-    public double getPrice(){
+    protected double getPrice(){
         return price;
     }
-    public String getSex(){
+    protected String getSex(){
         return sex;
     }
 
